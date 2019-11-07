@@ -18,11 +18,16 @@
     <div class="result" v-if="url">
       {{ result() }}
     </div>
+    <button
+      @click="samplePostFunction"
+      style="width: 400px; height: 400px;"
+    ></button>
   </section>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
+import axios from 'axios';
 import { State } from 'vuex-class';
 
 @Component({
@@ -33,16 +38,36 @@ export default class IndexPage extends Vue {
   url: string = '';
 
   selectedFile: any = null;
-  image = null;
+
+  async samplePostFunction() {
+    console.log('this.selectedFile', this.selectedFile);
+    let formData = new FormData();
+    formData.append('file', this.selectedFile);
+    const data = await axios.post('http://localhost:5000/sample', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log('after axios post data', data);
+  }
 
   onFileSelected(event: any) {
+    console.log('this is', this);
     this.selectedFile = event.target.files[0];
     this.url = URL.createObjectURL(this.selectedFile);
     const that = this.url;
+    // setTimeout(function() {
+    //   URL.revokeObjectURL(that);
+    // }, 1000);
+  }
 
-    setTimeout(function() {
-      URL.revokeObjectURL(that);
-    }, 1000);
+  testThis = () => {
+    console.log('testThis', this);
+    this.innerFunc();
+  };
+
+  innerFunc() {
+    console.log('innerFunc', this);
   }
 
   result() {
