@@ -18,10 +18,6 @@
     <div class="result" v-if="url">
       {{ result() }}
     </div>
-    <button
-      @click="samplePostFunction"
-      style="width: 400px; height: 400px;"
-    ></button>
   </section>
 </template>
 
@@ -39,26 +35,20 @@ export default class IndexPage extends Vue {
 
   selectedFile: any = null;
 
-  async samplePostFunction() {
-    console.log('this.selectedFile', this.selectedFile);
-    let formData = new FormData();
-    formData.append('file', this.selectedFile);
-    const data = await axios.post('http://localhost:5000/sample', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log('after axios post data', data);
-  }
-
-  onFileSelected(event: any) {
+  async onFileSelected(event: any) {
     console.log('this is', this);
-    this.selectedFile = event.target.files[0];
-    this.url = URL.createObjectURL(this.selectedFile);
-    const that = this.url;
-    // setTimeout(function() {
-    //   URL.revokeObjectURL(that);
-    // }, 1000);
+    if (event.target.files[0]) {
+      this.selectedFile = event.target.files[0];
+      this.url = URL.createObjectURL(this.selectedFile);
+      let formData = new FormData();
+      formData.append('file', this.selectedFile);
+      const data = await axios.post('http://localhost:5000/sample', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('onFileSelected result', data);
+    }
   }
 
   testThis = () => {
